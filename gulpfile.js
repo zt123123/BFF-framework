@@ -7,7 +7,8 @@ gulp.task('builddev', () => {
     return watch(path.resolve(__dirname, 'src/nodeuii/**/*.js'), { ignoreInitial: false }, () => {
         gulp.src(path.resolve(__dirname, 'src/nodeuii/**/*.js'))
             .pipe(babel({
-                babelrc: false
+                babelrc: false,
+                "plugins": ["transform-es2015-modules-commonjs"]
             }))
             .pipe(gulp.dest('dist'))
     })
