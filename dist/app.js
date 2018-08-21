@@ -16,6 +16,10 @@ var _koaStatic = require("koa-static");
 
 var _koaStatic2 = _interopRequireDefault(_koaStatic);
 
+var _awilix = require("awilix");
+
+var _awilixKoa = require("awilix-koa");
+
 var _co = require("co");
 
 var _co2 = _interopRequireDefault(_co);
@@ -23,10 +27,6 @@ var _co2 = _interopRequireDefault(_co);
 var _config = require("./config");
 
 var _config2 = _interopRequireDefault(_config);
-
-var _controllers = require("./controllers");
-
-var _controllers2 = _interopRequireDefault(_controllers);
 
 var _errHandler = require("./middlewares/errHandler");
 
@@ -55,8 +55,20 @@ _log4js2.default.configure({
 const logger = _log4js2.default.getLogger('cheese');
 
 const app = new _koa2.default();
-app.use((0, _koaStatic2.default)(_config2.default.staticDir));
-_errHandler2.default.error(app, logger);
+
+const container = (0, _awilix.createContainer)();
+
+app.use((0, _awilixKoa.scopePerRequest)(container));
+
+container.loadModules([(0, _path.join)(__dirname, "/service/*.js")], {
+    formatName: "camelCase",
+    resolverOptions: {
+        lifetime: _awilix.Lifetime.SCOPED
+    }
+});
+
+app.use((0, _awilixKoa.loadControllers)("controllers/*.js", { cwd: __dirname }));
+
 app.context.render = _co2.default.wrap((0, _koaSwig2.default)({
     root: _config2.default.viewDir,
     autoescape: true,
@@ -66,7 +78,10 @@ app.context.render = _co2.default.wrap((0, _koaSwig2.default)({
     writeBody: false
 }));
 
-(0, _controllers2.default)(app, _koaSimpleRouter2.default);
+app.use((0, _koaStatic2.default)(_config2.default.staticDir));
+
+_errHandler2.default.error(app, logger);
+
 app.listen(_config2.default.port, () => {
-    console.log(`server listen at ${_config2.default.port}`);
+    logger.log(`server listen at ${_config2.default.port}`);
 });

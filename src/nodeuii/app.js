@@ -2,9 +2,10 @@ import Koa from "koa"
 import router from "koa-simple-router"
 import render from "koa-swig"
 import server from "koa-static"
+import { createContainer, Lifetime } from "awilix"
+import { scopePerRequest, loadControllers } from "awilix-koa"
 import co from "co"
 import config from "./config";
-import controllerInit from "./controllers";
 import errorHandler from "./middlewares/errHandler";
 
 import log4js from 'log4js';
@@ -24,8 +25,20 @@ log4js.configure({
 const logger = log4js.getLogger('cheese');
 
 const app = new Koa()
-app.use(server(config.staticDir))
-errorHandler.error(app, logger)
+
+const container = createContainer()
+
+app.use(scopePerRequest(container))
+
+container.loadModules([join(__dirname, "/service/*.js")], {
+    formatName: "camelCase",
+    resolverOptions: {
+        lifetime: Lifetime.SCOPED
+    }
+})
+
+app.use(loadControllers("controllers/*.js", { cwd: __dirname }))
+
 app.context.render = co.wrap(render({
     root: config.viewDir,
     autoescape: true,
@@ -35,7 +48,10 @@ app.context.render = co.wrap(render({
     writeBody: false
 }));
 
-controllerInit(app, router)
+app.use(server(config.staticDir))
+
+errorHandler.error(app, logger)
+
 app.listen(config.port, () => {
     logger.log(`server listen at ${config.port}`);
 })

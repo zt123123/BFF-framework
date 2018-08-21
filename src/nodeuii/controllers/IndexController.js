@@ -1,18 +1,17 @@
-import IndexModel from "../models/IndexModel"
-class IndexController {
-    constructor() {
+import { route, GET } from "awilix-koa";
 
+@route("/")
+@route("/index/html")
+export default class IndexController {
+    constructor({ indexService }) {
+        this.indexService = indexService
     }
 
-    indexAction() {
-        return async (ctx) => {
-            const IndexModelIns = new IndexModel()
-            const result = await IndexModelIns.getData()
-            ctx.body = await ctx.render('index', {
-                data: result
-            })
-        }
+    @GET()
+    async indexAction(ctx) {
+        const result = await this.indexService.getData()
+        ctx.body = await ctx.render('index', {
+            data: result
+        })
     }
-}
-
-export default IndexController
+} 

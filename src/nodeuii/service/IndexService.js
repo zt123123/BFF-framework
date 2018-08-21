@@ -1,8 +1,3 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
 /**
  * @fileoverview 实现Index数据模型
  * @author 249812928@qq.com
@@ -13,12 +8,12 @@ Object.defineProperty(exports, "__esModule", {
 * @class
 */
 
-class IndexMode {
+class IndexService {
     /**
      * @constructor
      * @param {string} app koa2上下文
      */
-    constructor(app) {}
+    constructor() { }
 
     /**
      * 获取具体数据的API接口
@@ -29,14 +24,12 @@ class IndexMode {
      */
 
     getData() {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             setTimeout(() => {
-                resolve("IndexAction异步数据");
+                resolve("IndexAction异步数据")
             }, 1000);
-        }).catch(err => {
-            reject(err);
-        });
+        })
     }
 }
 
-exports.default = IndexMode;
+export default IndexService
