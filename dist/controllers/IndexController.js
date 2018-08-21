@@ -16,7 +16,7 @@ class IndexController {
     indexAction() {
         return async (ctx, next) => {
             const IndexModelIns = new _IndexModel2.default();
-            const result = await IndexModelIns.getData();
+            // const result = await IndexModelIns.getData()
             ctx.body = await ctx.render('index', {
                 data: result
             });

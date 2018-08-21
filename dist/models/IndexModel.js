@@ -32,7 +32,7 @@ class IndexMode {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 resolve("IndexAction异步数据");
-            }, 2000);
+            }, 1000);
         }).catch(err => {
             reject(err);
         });
