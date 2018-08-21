@@ -5,9 +5,9 @@ class IndexController {
     }
 
     indexAction() {
-        return async (ctx, next) => {
+        return async (ctx) => {
             const IndexModelIns = new IndexModel()
-            // const result = await IndexModelIns.getData()
+            const result = await IndexModelIns.getData()
             ctx.body = await ctx.render('index', {
                 data: result
             })

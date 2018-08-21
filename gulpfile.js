@@ -5,6 +5,7 @@ const babel = require('gulp-babel');
 const rollup = require('gulp-rollup');
 const replace = require('rollup-plugin-replace');
 const gulpSequence = require('gulp-sequence')
+const eslint = require('gulp-eslint');
 
 gulp.task('builddev', () => {
     return watch(path.resolve(__dirname, 'src/nodeuii/**/*.js'), { ignoreInitial: false }, () => {
@@ -42,9 +43,18 @@ gulp.task('configclean', () => {
         }))
         .pipe(gulp.dest('./dist'));
 });
+gulp.task('lint', () => {
+    gulp.src('./src/nodeuii/**/*.js')
+        .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(eslint.failAfterError());
+});
 
 let _task = ["builddev"]
 if (process.env.NODE_ENV == "production") {
     _task = gulpSequence("buildprod", "configclean")
+}
+if (process.env.NODE_ENV == "lint") {
+    _task = gulpSequence("lint", "configclean")
 }
 gulp.task("default", _task)

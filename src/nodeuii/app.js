@@ -37,5 +37,5 @@ app.context.render = co.wrap(render({
 
 controllerInit(app, router)
 app.listen(config.port, () => {
-    console.log(`server listen at ${config.port}`);
+    logger.log(`server listen at ${config.port}`);
 })

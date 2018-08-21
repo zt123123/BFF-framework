@@ -13,7 +13,7 @@ class IndexMode {
      * @constructor
      * @param {string} app koa2上下文
      */
-    constructor(app) { }
+    constructor() { }
 
     /**
      * 获取具体数据的API接口
@@ -24,12 +24,10 @@ class IndexMode {
      */
 
     getData() {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             setTimeout(() => {
                 resolve("IndexAction异步数据")
             }, 1000);
-        }).catch(err => {
-            reject(err)
         })
     }
 }
